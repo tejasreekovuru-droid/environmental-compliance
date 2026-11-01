@@ -1,0 +1,2413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Environmental Compliance Monitoring System</title>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial,Helvetica,sans-serif;
+}
+
+body{
+    background:#07101d;
+    color:#fff;
+}
+
+/* SIDEBAR */
+.sidebar{
+    position:fixed;
+    left:0;
+    top:0;
+    width:245px;
+    height:100vh;
+    background:#0f1929;
+    border-right:1px solid #25334a;
+    padding:22px 14px;
+    z-index:100;
+}
+
+.logo{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:8px;
+    margin-bottom:25px;
+}
+
+.logo-icon{
+    width:38px;
+    height:38px;
+    border-radius:10px;
+    background:linear-gradient(135deg,#19d995,#299cff);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:20px;
+}
+
+.logo h2{
+    font-size:15px;
+}
+
+.logo p{
+    color:#6e7d95;
+    font-size:9px;
+    margin-top:4px;
+}
+
+.section-title{
+    color:#66758d;
+    font-size:9px;
+    margin:18px 10px 7px;
+    letter-spacing:1px;
+}
+
+.menu-btn{
+    width:100%;
+    border:0;
+    background:transparent;
+    color:#9aa7ba;
+    padding:12px;
+    border-radius:8px;
+    text-align:left;
+    cursor:pointer;
+    margin:3px 0;
+    font-size:11px;
+    transition:.2s;
+}
+
+.menu-btn:hover{
+    background:#192942;
+    color:white;
+}
+
+.menu-btn.active{
+    background:#1b304e;
+    color:white;
+    border-left:3px solid #19d995;
+}
+
+.profile{
+    position:absolute;
+    left:14px;
+    right:14px;
+    bottom:15px;
+    background:#17243a;
+    padding:11px;
+    border-radius:8px;
+    display:flex;
+    gap:9px;
+    align-items:center;
+}
+
+.profile-icon{
+    width:32px;
+    height:32px;
+    background:#263a5b;
+    border-radius:50%;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+.profile h4{
+    font-size:9px;
+}
+
+.profile p{
+    font-size:8px;
+    color:#70809a;
+    margin-top:3px;
+}
+
+/* MAIN */
+.main{
+    margin-left:245px;
+    padding:25px;
+    min-height:100vh;
+}
+
+.header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:22px;
+}
+
+.header h1{
+    font-size:23px;
+}
+
+.header p{
+    color:#74829a;
+    font-size:10px;
+    margin-top:6px;
+}
+
+.refresh-btn{
+    background:#17253b;
+    color:#fff;
+    border:1px solid #2b3a53;
+    padding:9px 14px;
+    border-radius:7px;
+    cursor:pointer;
+}
+
+.refresh-btn:hover{
+    background:#223554;
+}
+
+/* PAGES */
+.page{
+    display:none;
+}
+
+.page.active{
+    display:block;
+}
+
+/* CARDS */
+.cards{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:14px;
+    margin-bottom:18px;
+}
+
+.card{
+    background:#111c2e;
+    border:1px solid #29374e;
+    border-radius:10px;
+    padding:17px;
+    position:relative;
+}
+
+.card-title{
+    color:#75839b;
+    font-size:9px;
+    text-transform:uppercase;
+}
+
+.card-value{
+    font-size:27px;
+    font-weight:bold;
+    margin-top:9px;
+}
+
+.card-sub{
+    color:#697891;
+    font-size:9px;
+    margin-top:5px;
+}
+
+.card-icon{
+    position:absolute;
+    right:16px;
+    top:16px;
+    font-size:19px;
+}
+
+.green-border{
+    border-left:3px solid #19d995;
+}
+
+.blue-border{
+    border-left:3px solid #299cff;
+}
+
+.yellow-border{
+    border-left:3px solid #ffb52e;
+}
+
+.red-border{
+    border-left:3px solid #ff4e5c;
+}
+
+/* PANELS */
+.grid-2{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:17px;
+}
+
+.panel{
+    background:#111c2e;
+    border:1px solid #29374e;
+    border-radius:10px;
+    padding:18px;
+    margin-bottom:17px;
+}
+
+.panel-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:15px;
+}
+
+.panel-header h2{
+    font-size:13px;
+}
+
+.panel-header span{
+    color:#687792;
+    font-size:9px;
+}
+
+canvas{
+    max-height:280px;
+}
+
+/* COMPLIANCE */
+.compliance-box{
+    display:flex;
+    align-items:center;
+    justify-content:space-around;
+    min-height:260px;
+}
+
+.donut-container{
+    width:190px;
+}
+
+.compliance-info{
+    width:45%;
+}
+
+.compliance-row{
+    background:#19263c;
+    padding:12px;
+    border-radius:7px;
+    display:flex;
+    justify-content:space-between;
+    margin:7px 0;
+    font-size:10px;
+}
+
+.green-text{
+    color:#19d995;
+}
+
+.red-text{
+    color:#ff5360;
+}
+
+.yellow-text{
+    color:#ffbd3d;
+}
+
+.blue-text{
+    color:#299cff;
+}
+
+/* TABLE */
+.table-container{
+    overflow-x:auto;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+th{
+    padding:12px;
+    text-align:left;
+    color:#71809a;
+    font-size:9px;
+    border-bottom:1px solid #29374e;
+}
+
+td{
+    padding:13px 12px;
+    color:#c2cbd8;
+    font-size:10px;
+    border-bottom:1px solid #202d43;
+}
+
+.badge{
+    padding:5px 9px;
+    border-radius:15px;
+    font-size:8px;
+}
+
+.badge-green{
+    color:#19d995;
+    background:#123c32;
+}
+
+.badge-red{
+    color:#ff6470;
+    background:#41202a;
+}
+
+.badge-yellow{
+    color:#ffbd3d;
+    background:#44371c;
+}
+
+/* PROGRESS */
+.metric{
+    margin:16px 0;
+}
+
+.metric-head{
+    display:flex;
+    justify-content:space-between;
+    font-size:10px;
+    margin-bottom:7px;
+}
+
+.progress{
+    width:100%;
+    height:7px;
+    background:#202c41;
+    border-radius:10px;
+}
+
+.progress-bar{
+    height:100%;
+    border-radius:10px;
+}
+
+.pg-green{
+    background:#19d995;
+}
+
+.pg-blue{
+    background:#299cff;
+}
+
+.pg-yellow{
+    background:#ffb52e;
+}
+
+.pg-red{
+    background:#ff4e5c;
+}
+
+/* ALERTS */
+.alert{
+    background:#19263c;
+    border-radius:7px;
+    padding:12px;
+    margin:7px 0;
+    font-size:10px;
+    color:#aab5c7;
+}
+
+.alert-title{
+    font-weight:bold;
+    margin-bottom:4px;
+    color:#fff;
+}
+
+/* REPORT */
+.report-item{
+    background:#19263c;
+    border-radius:8px;
+    padding:16px;
+    margin:10px 0;
+}
+
+.report-item h3{
+    font-size:12px;
+    margin-bottom:8px;
+}
+
+.report-item p{
+    color:#9ca9bb;
+    font-size:10px;
+    line-height:1.7;
+}
+
+.action-btn{
+    border:none;
+    background:linear-gradient(90deg,#299cff,#19d995);
+    color:white;
+    padding:10px 16px;
+    border-radius:7px;
+    cursor:pointer;
+    margin-top:8px;
+}
+
+/* SETTINGS */
+.setting{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:15px;
+    background:#19263c;
+    border-radius:8px;
+    margin:8px 0;
+}
+
+.setting h3{
+    font-size:11px;
+}
+
+.setting p{
+    color:#75839b;
+    font-size:9px;
+    margin-top:4px;
+}
+
+/* FUNCTIONAL TOGGLE */
+.toggle{
+    width:42px;
+    height:22px;
+    background:#3a4659;
+    border-radius:20px;
+    position:relative;
+    cursor:pointer;
+    transition:0.25s ease;
+    flex-shrink:0;
+}
+
+.toggle::after{
+    content:"";
+    position:absolute;
+    width:17px;
+    height:17px;
+    background:white;
+    border-radius:50%;
+    top:2.5px;
+    left:3px;
+    transition:0.25s ease;
+}
+
+.toggle.active{
+    background:#19d995;
+}
+
+.toggle.active::after{
+    left:22px;
+}
+
+/* INSIGHTS */
+.insight-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:15px;
+}
+
+.insight{
+    background:#19263c;
+    border-radius:8px;
+    padding:15px;
+}
+
+.insight h3{
+    font-size:11px;
+    margin-bottom:7px;
+}
+
+.insight p{
+    color:#8491a6;
+    font-size:9px;
+    line-height:1.6;
+}
+
+/* FOOTER */
+footer{
+    text-align:center;
+    color:#56647a;
+    font-size:8px;
+    padding:20px;
+}
+
+/* RESPONSIVE */
+@media(max-width:1050px){
+
+    .cards{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+    .insight-grid{
+        grid-template-columns:1fr;
+    }
+}
+
+@media(max-width:750px){
+
+    .sidebar{
+        width:70px;
+    }
+
+    .logo h2,
+    .logo p,
+    .section-title,
+    .menu-text,
+    .profile-text{
+        display:none;
+    }
+
+    .logo{
+        justify-content:center;
+    }
+
+    .menu-btn{
+        text-align:center;
+    }
+
+    .main{
+        margin-left:70px;
+    }
+
+    .grid-2{
+        grid-template-columns:1fr;
+    }
+
+    .cards{
+        grid-template-columns:1fr;
+    }
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- ================= SIDEBAR ================= -->
+
+<aside class="sidebar">
+
+    <div class="logo">
+
+        <div class="logo-icon">🌍</div>
+
+        <div>
+            <h2>Eco Monitor</h2>
+            <p>Environmental Compliance</p>
+        </div>
+
+    </div>
+
+    <div class="section-title">MONITORING</div>
+
+    <button class="menu-btn active" data-page="overview">
+        ◉ <span class="menu-text">Overview</span>
+    </button>
+
+    <button class="menu-btn" data-page="data">
+        ▣ <span class="menu-text">Environmental Data</span>
+    </button>
+
+    <button class="menu-btn" data-page="air">
+        ☁ <span class="menu-text">Air Quality</span>
+    </button>
+
+    <button class="menu-btn" data-page="water">
+        💧 <span class="menu-text">Water Quality</span>
+    </button>
+
+    <button class="menu-btn" data-page="noise">
+        ♫ <span class="menu-text">Noise Monitoring</span>
+    </button>
+
+    <button class="menu-btn" data-page="emission">
+        ♨ <span class="menu-text">Emission Monitoring</span>
+    </button>
+
+    <div class="section-title">ANALYSIS</div>
+
+    <button class="menu-btn" data-page="compliance">
+        ◒ <span class="menu-text">Compliance Analysis</span>
+    </button>
+
+    <button class="menu-btn" data-page="reports">
+        ▤ <span class="menu-text">Reports</span>
+    </button>
+
+    <button class="menu-btn" data-page="settings">
+        ⚙ <span class="menu-text">Settings</span>
+    </button>
+
+    <div class="profile">
+
+        <div class="profile-icon">E</div>
+
+        <div class="profile-text">
+            <h4>Environmental Officer</h4>
+            <p>Monitoring Department</p>
+        </div>
+
+    </div>
+
+</aside>
+
+
+<!-- ================= MAIN ================= -->
+
+<main class="main">
+
+<header class="header">
+
+    <div>
+
+        <h1 id="pageTitle">
+            Environmental Compliance Dashboard
+        </h1>
+
+        <p id="pageDescription">
+            Environmental monitoring, compliance tracking and analytical insights.
+        </p>
+
+    </div>
+
+    <button class="refresh-btn" id="refreshBtn">
+        ↻ Refresh
+    </button>
+
+</header>
+
+
+<!-- ================= OVERVIEW ================= -->
+
+<section id="overview" class="page active">
+
+<div class="cards">
+
+    <div class="card green-border">
+        <div class="card-title">Total Monitoring Records</div>
+        <div class="card-value">12</div>
+        <div class="card-sub">Environmental observations</div>
+        <div class="card-icon">📊</div>
+    </div>
+
+    <div class="card blue-border">
+        <div class="card-title">Overall Compliance</div>
+        <div class="card-value">50%</div>
+        <div class="card-sub">Current compliance rate</div>
+        <div class="card-icon">✓</div>
+    </div>
+
+    <div class="card yellow-border">
+        <div class="card-title">Average Air Quality</div>
+        <div class="card-value">91.3</div>
+        <div class="card-sub">Permissible limit: 100</div>
+        <div class="card-icon">☁</div>
+    </div>
+
+    <div class="card red-border">
+        <div class="card-title">Non-Compliant</div>
+        <div class="card-value">6</div>
+        <div class="card-sub">Records requiring attention</div>
+        <div class="card-icon">⚠</div>
+    </div>
+
+</div>
+
+
+<div class="grid-2">
+
+    <div class="panel">
+
+        <div class="panel-header">
+            <h2>Compliance Overview</h2>
+            <span>Current Status</span>
+        </div>
+
+        <div class="compliance-box">
+
+            <div class="donut-container">
+                <canvas id="overviewDonut"></canvas>
+            </div>
+
+            <div class="compliance-info">
+
+                <div class="compliance-row">
+                    <span>Compliant</span>
+                    <strong class="green-text">50%</strong>
+                </div>
+
+                <div class="compliance-row">
+                    <span>Non-Compliant</span>
+                    <strong class="red-text">50%</strong>
+                </div>
+
+                <div class="compliance-row">
+                    <span>Total Records</span>
+                    <strong>12</strong>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="panel">
+
+        <div class="panel-header">
+            <h2>Environmental Parameters</h2>
+            <span>Average Values</span>
+        </div>
+
+        <canvas id="parameterChart"></canvas>
+
+    </div>
+
+</div>
+
+
+<div class="panel">
+
+    <div class="panel-header">
+        <h2>Environmental Monitoring Trends</h2>
+        <span>Monthly Analysis</span>
+    </div>
+
+    <canvas id="trendChart"></canvas>
+
+</div>
+
+
+<div class="grid-2">
+
+    <div class="panel">
+
+        <div class="panel-header">
+            <h2>Parameter Compliance</h2>
+            <span>Percentage</span>
+        </div>
+
+        <div class="metric">
+            <div class="metric-head">
+                <span>Air Quality</span>
+                <strong>75%</strong>
+            </div>
+
+            <div class="progress">
+                <div class="progress-bar pg-green" style="width:75%"></div>
+            </div>
+        </div>
+
+        <div class="metric">
+            <div class="metric-head">
+                <span>Water Quality</span>
+                <strong>100%</strong>
+            </div>
+
+            <div class="progress">
+                <div class="progress-bar pg-blue" style="width:100%"></div>
+            </div>
+        </div>
+
+        <div class="metric">
+            <div class="metric-head">
+                <span>Noise Monitoring</span>
+                <strong>67%</strong>
+            </div>
+
+            <div class="progress">
+                <div class="progress-bar pg-yellow" style="width:67%"></div>
+            </div>
+        </div>
+
+        <div class="metric">
+            <div class="metric-head">
+                <span>Emission Monitoring</span>
+                <strong>75%</strong>
+            </div>
+
+            <div class="progress">
+                <div class="progress-bar pg-green" style="width:75%"></div>
+            </div>
+        </div>
+
+    </div>
+
+
+    <div class="panel">
+
+        <div class="panel-header">
+            <h2>Compliance Alerts</h2>
+            <span>Attention Required</span>
+        </div>
+
+        <div class="alert">
+
+            <div class="alert-title red-text">
+                ⚠ Air Quality Alert
+            </div>
+
+            Air quality exceeded the permissible limit at selected locations.
+
+        </div>
+
+        <div class="alert">
+
+            <div class="alert-title yellow-text">
+                ⚠ Noise Alert
+            </div>
+
+            Noise level requires additional monitoring.
+
+        </div>
+
+        <div class="alert">
+
+            <div class="alert-title red-text">
+                ⚠ Emission Alert
+            </div>
+
+            Emission level exceeded the defined limit.
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<div class="panel">
+
+    <div class="panel-header">
+        <h2>Environmental Insights</h2>
+        <span>System Analysis</span>
+    </div>
+
+    <div class="insight-grid">
+
+        <div class="insight">
+            <h3>🌱 Water Quality</h3>
+            <p>
+                Water pH values remain within the acceptable
+                monitoring range.
+            </p>
+        </div>
+
+        <div class="insight">
+            <h3>☁ Air Quality</h3>
+            <p>
+                Some air quality readings exceed the permissible
+                threshold and require attention.
+            </p>
+        </div>
+
+        <div class="insight">
+            <h3>♻ Environmental Risk</h3>
+            <p>
+                Overall environmental compliance is currently
+                classified as moderate risk.
+            </p>
+        </div>
+
+    </div>
+
+</div>
+
+</section>
+
+
+<!-- ================= ENVIRONMENTAL DATA ================= -->
+
+<section id="data" class="page">
+
+<div class="panel">
+
+    <div class="panel-header">
+        <h2>Environmental Monitoring Dataset</h2>
+        <span>12 Records</span>
+    </div>
+
+    <div class="table-container">
+
+    <table>
+
+        <thead>
+            <tr>
+                <th>LOCATION</th>
+                <th>MONTH</th>
+                <th>AIR</th>
+                <th>WATER pH</th>
+                <th>NOISE</th>
+                <th>EMISSION</th>
+                <th>STATUS</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            <tr>
+                <td>Plant A</td>
+                <td>January</td>
+                <td>72</td>
+                <td>7.1</td>
+                <td>62</td>
+                <td>38</td>
+                <td><span class="badge badge-green">Compliant</span></td>
+            </tr>
+
+            <tr>
+                <td>Plant A</td>
+                <td>February</td>
+                <td>85</td>
+                <td>7.3</td>
+                <td>65</td>
+                <td>42</td>
+                <td><span class="badge badge-green">Compliant</span></td>
+            </tr>
+
+            <tr>
+                <td>Plant A</td>
+                <td>March</td>
+                <td>95</td>
+                <td>7.2</td>
+                <td>68</td>
+                <td>47</td>
+                <td><span class="badge badge-green">Compliant</span></td>
+            </tr>
+
+            <tr>
+                <td>Plant A</td>
+                <td>April</td>
+                <td>110</td>
+                <td>7.6</td>
+                <td>72</td>
+                <td>55</td>
+                <td><span class="badge badge-red">Non-Compliant</span></td>
+            </tr>
+
+            <tr>
+                <td>Plant B</td>
+                <td>January</td>
+                <td>68</td>
+                <td>6.9</td>
+                <td>60</td>
+                <td>35</td>
+                <td><span class="badge badge-green">Compliant</span></td>
+            </tr>
+
+            <tr>
+                <td>Plant B</td>
+                <td>February</td>
+                <td>82</td>
+                <td>7.1</td>
+                <td>64</td>
+                <td>40</td>
+                <td><span class="badge badge-green">Compliant</span></td>
+            </tr>
+
+            <tr>
+                <td>Plant B</td>
+                <td>March</td>
+                <td>91</td>
+                <td>7.4</td>
+                <td>67</td>
+                <td>45</td>
+                <td><span class="badge badge-green">Compliant</span></td>
+            </tr>
+
+            <tr>
+                <td>Plant B</td>
+                <td>April</td>
+                <td>105</td>
+                <td>7.8</td>
+                <td>70</td>
+                <td>52</td>
+                <td><span class="badge badge-red">Non-Compliant</span></td>
+            </tr>
+
+            <tr>
+                <td>Plant C</td>
+                <td>January</td>
+                <td>75</td>
+                <td>7.0</td>
+                <td>63</td>
+                <td>39</td>
+                <td><span class="badge badge-green">Compliant</span></td>
+            </tr>
+
+            <tr>
+                <td>Plant C</td>
+                <td>February</td>
+                <td>88</td>
+                <td>7.2</td>
+                <td>66</td>
+                <td>44</td>
+                <td><span class="badge badge-green">Compliant</span></td>
+            </tr>
+
+            <tr>
+                <td>Plant C</td>
+                <td>March</td>
+                <td>98</td>
+                <td>7.5</td>
+                <td>71</td>
+                <td>50</td>
+                <td><span class="badge badge-yellow">Attention</span></td>
+            </tr>
+
+            <tr>
+                <td>Plant C</td>
+                <td>April</td>
+                <td>115</td>
+                <td>8.0</td>
+                <td>75</td>
+                <td>58</td>
+                <td><span class="badge badge-red">Non-Compliant</span></td>
+            </tr>
+
+        </tbody>
+
+    </table>
+
+    </div>
+
+</div>
+
+</section>
+
+
+<!-- ================= AIR QUALITY ================= -->
+
+<section id="air" class="page">
+
+<div class="cards">
+
+    <div class="card blue-border">
+        <div class="card-title">Average Air Quality</div>
+        <div class="card-value">91.3</div>
+        <div class="card-sub">Permissible limit: 100</div>
+    </div>
+
+    <div class="card green-border">
+        <div class="card-title">Minimum</div>
+        <div class="card-value">68</div>
+        <div class="card-sub">Lowest recorded</div>
+    </div>
+
+    <div class="card red-border">
+        <div class="card-title">Maximum</div>
+        <div class="card-value">115</div>
+        <div class="card-sub">Above permissible limit</div>
+    </div>
+
+    <div class="card yellow-border">
+        <div class="card-title">Compliance</div>
+        <div class="card-value">75%</div>
+        <div class="card-sub">Current status</div>
+    </div>
+
+</div>
+
+
+<div class="panel">
+
+    <div class="panel-header">
+        <h2>Air Quality Trend</h2>
+        <span>Limit = 100</span>
+    </div>
+
+    <canvas id="airChart"></canvas>
+
+</div>
+
+
+<div class="panel">
+
+    <div class="panel-header">
+        <h2>Air Quality Assessment</h2>
+    </div>
+
+    <div class="alert">
+
+        <div class="alert-title">
+            Monitoring Observation
+        </div>
+
+        Air quality values show an increasing trend during
+        the monitoring period.
+
+    </div>
+
+    <div class="alert">
+
+        <div class="alert-title red-text">
+            Compliance Alert
+        </div>
+
+        Some observations exceeded the permissible limit.
+
+    </div>
+
+</div>
+
+</section>
+
+
+<!-- ================= WATER QUALITY ================= -->
+
+<section id="water" class="page">
+
+<div class="cards">
+
+    <div class="card green-border">
+        <div class="card-title">Average pH</div>
+        <div class="card-value">7.35</div>
+        <div class="card-sub">Normal range</div>
+    </div>
+
+    <div class="card blue-border">
+        <div class="card-title">Minimum pH</div>
+        <div class="card-value">6.9</div>
+        <div class="card-sub">Recorded minimum</div>
+    </div>
+
+    <div class="card green-border">
+        <div class="card-title">Maximum pH</div>
+        <div class="card-value">8.0</div>
+        <div class="card-sub">Recorded maximum</div>
+    </div>
+
+    <div class="card green-border">
+        <div class="card-title">Compliance</div>
+        <div class="card-value">100%</div>
+        <div class="card-sub">Within range</div>
+    </div>
+
+</div>
+
+
+<div class="panel">
+
+    <div class="panel-header">
+        <h2>Water Quality Trend</h2>
+        <span>Acceptable pH: 6.5–8.5</span>
+    </div>
+
+    <canvas id="waterChart"></canvas>
+
+</div>
+
+
+<div class="panel">
+
+    <div class="alert">
+
+        <div class="alert-title green-text">
+            ✓ Water Quality Compliant
+        </div>
+
+        All monitored water pH values remain within the
+        defined acceptable range.
+
+    </div>
+
+</div>
+
+</section>
+
+
+<!-- ================= NOISE ================= -->
+
+<section id="noise" class="page">
+
+<div class="cards">
+
+    <div class="card yellow-border">
+        <div class="card-title">Average Noise</div>
+        <div class="card-value">67.3</div>
+        <div class="card-sub">Monitoring average</div>
+    </div>
+
+    <div class="card green-border">
+        <div class="card-title">Minimum</div>
+        <div class="card-value">60</div>
+        <div class="card-sub">Lowest level</div>
+    </div>
+
+    <div class="card red-border">
+        <div class="card-title">Maximum</div>
+        <div class="card-value">75</div>
+        <div class="card-sub">Above limit</div>
+    </div>
+
+    <div class="card yellow-border">
+        <div class="card-title">Compliance</div>
+        <div class="card-value">67%</div>
+        <div class="card-sub">Current status</div>
+    </div>
+
+</div>
+
+
+<div class="panel">
+
+    <div class="panel-header">
+        <h2>Noise Monitoring Trend</h2>
+        <span>Limit = 70</span>
+    </div>
+
+    <canvas id="noiseChart"></canvas>
+
+</div>
+
+
+<div class="panel">
+
+    <div class="alert">
+
+        <div class="alert-title yellow-text">
+            ⚠ Noise Monitoring Alert
+        </div>
+
+        Noise levels increased during the later monitoring
+        period and require additional observation.
+
+    </div>
+
+</div>
+
+</section>
+
+
+<!-- ================= EMISSION ================= -->
+
+<section id="emission" class="page">
+
+<div class="cards">
+
+    <div class="card yellow-border">
+        <div class="card-title">Average Emission</div>
+        <div class="card-value">45.4</div>
+        <div class="card-sub">Monitoring average</div>
+    </div>
+
+    <div class="card green-border">
+        <div class="card-title">Minimum</div>
+        <div class="card-value">35</div>
+        <div class="card-sub">Lowest value</div>
+    </div>
+
+    <div class="card red-border">
+        <div class="card-title">Maximum</div>
+        <div class="card-value">58</div>
+        <div class="card-sub">Above limit</div>
+    </div>
+
+    <div class="card yellow-border">
+        <div class="card-title">Compliance</div>
+        <div class="card-value">75%</div>
+        <div class="card-sub">Current status</div>
+    </div>
+
+</div>
+
+
+<div class="panel">
+
+    <div class="panel-header">
+        <h2>Emission Monitoring Trend</h2>
+        <span>Limit = 50</span>
+    </div>
+
+    <canvas id="emissionChart"></canvas>
+
+</div>
+
+
+<div class="panel">
+
+    <div class="alert">
+
+        <div class="alert-title red-text">
+            ⚠ Emission Compliance Alert
+        </div>
+
+        Some emission observations exceeded the defined
+        permissible limit.
+
+    </div>
+
+</div>
+
+</section>
+
+
+<!-- ================= COMPLIANCE ANALYSIS ================= -->
+
+<section id="compliance" class="page">
+
+<div class="cards">
+
+    <div class="card green-border">
+        <div class="card-title">Compliant Records</div>
+        <div class="card-value">6</div>
+        <div class="card-sub">50% of records</div>
+    </div>
+
+    <div class="card red-border">
+        <div class="card-title">Non-Compliant</div>
+        <div class="card-value">6</div>
+        <div class="card-sub">Requires attention</div>
+    </div>
+
+    <div class="card blue-border">
+        <div class="card-title">Overall Compliance</div>
+        <div class="card-value">50%</div>
+        <div class="card-sub">Current rate</div>
+    </div>
+
+    <div class="card yellow-border">
+        <div class="card-title">Risk Level</div>
+        <div class="card-value">Medium</div>
+        <div class="card-sub">Based on observations</div>
+    </div>
+
+</div>
+
+
+<div class="grid-2">
+
+    <div class="panel">
+
+        <div class="panel-header">
+            <h2>Compliance Distribution</h2>
+            <span>Records</span>
+        </div>
+
+        <canvas id="complianceChart"></canvas>
+
+    </div>
+
+
+    <div class="panel">
+
+        <div class="panel-header">
+            <h2>Parameter Compliance</h2>
+            <span>Percentage</span>
+        </div>
+
+        <div class="metric">
+
+            <div class="metric-head">
+                <span>Air Quality</span>
+                <strong>75%</strong>
+            </div>
+
+            <div class="progress">
+                <div class="progress-bar pg-green" style="width:75%"></div>
+            </div>
+
+        </div>
+
+        <div class="metric">
+
+            <div class="metric-head">
+                <span>Water Quality</span>
+                <strong>100%</strong>
+            </div>
+
+            <div class="progress">
+                <div class="progress-bar pg-blue" style="width:100%"></div>
+            </div>
+
+        </div>
+
+        <div class="metric">
+
+            <div class="metric-head">
+                <span>Noise</span>
+                <strong>67%</strong>
+            </div>
+
+            <div class="progress">
+                <div class="progress-bar pg-yellow" style="width:67%"></div>
+            </div>
+
+        </div>
+
+        <div class="metric">
+
+            <div class="metric-head">
+                <span>Emission</span>
+                <strong>75%</strong>
+            </div>
+
+            <div class="progress">
+                <div class="progress-bar pg-green" style="width:75%"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+</section>
+
+
+<!-- ================= REPORTS ================= -->
+
+<section id="reports" class="page">
+
+<div class="panel">
+
+    <div class="panel-header">
+        <h2>Environmental Compliance Report</h2>
+        <span>Monitoring Summary</span>
+    </div>
+
+
+    <div class="report-item">
+
+        <h3>Executive Summary</h3>
+
+        <p>
+            The Environmental Compliance Monitoring System
+            monitors air quality, water quality, noise and
+            emission parameters to identify environmental
+            compliance conditions.
+        </p>
+
+    </div>
+
+
+    <div class="report-item">
+
+        <h3>Monitoring Statistics</h3>
+
+        <p>
+            Total Records: 12<br>
+            Compliant Records: 6<br>
+            Non-Compliant Records: 6<br>
+            Overall Compliance Rate: 50%
+        </p>
+
+    </div>
+
+
+    <div class="report-item">
+
+        <h3>Key Findings</h3>
+
+        <p>
+            Water quality remained within the acceptable range.
+            Air quality, noise and emission values showed some
+            observations above permissible limits.
+        </p>
+
+    </div>
+
+
+    <button class="action-btn" id="generateReport">
+        📄 Generate Report
+    </button>
+
+</div>
+
+</section>
+
+
+<!-- ================= SETTINGS ================= -->
+
+<section id="settings" class="page">
+
+<div class="panel">
+
+    <div class="panel-header">
+        <h2>System Settings</h2>
+        <span>Configuration</span>
+    </div>
+
+
+    <div class="setting">
+
+        <div>
+
+            <h3>Compliance Alerts</h3>
+
+            <p>
+                Notify when environmental values exceed limits.
+            </p>
+
+        </div>
+
+        <div class="toggle active" data-setting="alerts"></div>
+
+    </div>
+
+
+    <div class="setting">
+
+        <div>
+
+            <h3>Environmental Monitoring</h3>
+
+            <p>
+                Enable continuous monitoring.
+            </p>
+
+        </div>
+
+        <div class="toggle active" data-setting="monitoring"></div>
+
+    </div>
+
+
+    <div class="setting">
+
+        <div>
+
+            <h3>Automatic Reports</h3>
+
+            <p>
+                Generate periodic compliance reports.
+            </p>
+
+        </div>
+
+        <div class="toggle active" data-setting="reports"></div>
+
+    </div>
+
+</div>
+
+
+<div class="panel">
+
+    <div class="panel-header">
+        <h2>Configured Environmental Limits</h2>
+    </div>
+
+    <div class="compliance-row">
+        <span>Air Quality</span>
+        <strong>100</strong>
+    </div>
+
+    <div class="compliance-row">
+        <span>Water pH</span>
+        <strong>6.5 – 8.5</strong>
+    </div>
+
+    <div class="compliance-row">
+        <span>Noise Level</span>
+        <strong>70</strong>
+    </div>
+
+    <div class="compliance-row">
+        <span>Emission Level</span>
+        <strong>50</strong>
+    </div>
+
+</div>
+
+</section>
+
+
+<footer>
+Environmental Compliance Monitoring System © 2026
+</footer>
+
+</main>
+
+
+<script>
+
+/* ======================================================
+                  PAGE NAVIGATION
+====================================================== */
+
+document.addEventListener("DOMContentLoaded",function(){
+
+    const buttons=document.querySelectorAll(".menu-btn");
+    const pages=document.querySelectorAll(".page");
+
+    const title=document.getElementById("pageTitle");
+    const description=document.getElementById("pageDescription");
+
+
+    const pageInfo={
+
+        overview:[
+            "Environmental Compliance Dashboard",
+            "Environmental monitoring, compliance tracking and analytical insights."
+        ],
+
+        data:[
+            "Environmental Monitoring Data",
+            "View environmental observations collected from monitoring locations."
+        ],
+
+        air:[
+            "Air Quality Monitoring",
+            "Analyze air quality measurements and permissible limits."
+        ],
+
+        water:[
+            "Water Quality Monitoring",
+            "Analyze water pH measurements and compliance conditions."
+        ],
+
+        noise:[
+            "Noise Monitoring",
+            "Track noise levels and identify observations exceeding limits."
+        ],
+
+        emission:[
+            "Emission Monitoring",
+            "Monitor emission levels and environmental compliance."
+        ],
+
+        compliance:[
+            "Compliance Analysis",
+            "Analyze compliant and non-compliant environmental observations."
+        ],
+
+        reports:[
+            "Environmental Reports",
+            "Generate and review environmental compliance reports."
+        ],
+
+        settings:[
+            "System Settings",
+            "Configure monitoring and compliance settings."
+        ]
+
+    };
+
+
+    buttons.forEach(function(button){
+
+        button.addEventListener("click",function(){
+
+            const pageName=this.dataset.page;
+
+
+            pages.forEach(function(page){
+
+                page.classList.remove("active");
+
+            });
+
+
+            const selected=document.getElementById(pageName);
+
+            if(selected){
+
+                selected.classList.add("active");
+
+            }
+
+
+            buttons.forEach(function(btn){
+
+                btn.classList.remove("active");
+
+            });
+
+
+            this.classList.add("active");
+
+
+            if(pageInfo[pageName]){
+
+                title.textContent=pageInfo[pageName][0];
+
+                description.textContent=pageInfo[pageName][1];
+
+            }
+
+
+            window.scrollTo({
+
+                top:0,
+                behavior:"smooth"
+
+            });
+
+        });
+
+    });
+
+
+    /* REFRESH BUTTON */
+
+    document.getElementById("refreshBtn")
+    .addEventListener("click",function(){
+
+        const btn=this;
+
+        btn.textContent="✓ Updated";
+
+        setTimeout(function(){
+
+            btn.textContent="↻ Refresh";
+
+        },1200);
+
+    });
+
+
+    /* REPORT BUTTON */
+
+    document.getElementById("generateReport")
+    .addEventListener("click",function(){
+
+        alert(
+            "Environmental Compliance Report\n\n"+
+            "Total Records: 12\n"+
+            "Compliant Records: 6\n"+
+            "Non-Compliant Records: 6\n"+
+            "Overall Compliance: 50%\n\n"+
+            "Report generated successfully."
+        );
+
+    });
+
+
+    /* ==================================================
+                     SETTINGS TOGGLES
+    ================================================== */
+
+    const toggles=document.querySelectorAll(".toggle");
+
+    toggles.forEach(function(toggle){
+
+        toggle.addEventListener("click",function(){
+
+            this.classList.toggle("active");
+
+            const settingName=this.dataset.setting;
+
+            if(this.classList.contains("active")){
+
+                console.log(settingName+" enabled");
+
+            }else{
+
+                console.log(settingName+" disabled");
+
+            }
+
+        });
+
+    });
+
+});
+
+
+/* ======================================================
+                     CHART SETTINGS
+====================================================== */
+
+const chartOptions={
+
+    responsive:true,
+
+    plugins:{
+
+        legend:{
+
+            labels:{
+
+                color:"#9ba8bb",
+
+                font:{
+                    size:10
+                }
+
+            }
+
+        }
+
+    },
+
+    scales:{
+
+        x:{
+
+            ticks:{
+                color:"#77859d"
+            },
+
+            grid:{
+                display:false
+            }
+
+        },
+
+        y:{
+
+            ticks:{
+                color:"#77859d"
+            },
+
+            grid:{
+                color:"#263349"
+            }
+
+        }
+
+    }
+
+};
+
+
+/* ======================================================
+                    OVERVIEW DONUT
+====================================================== */
+
+new Chart(
+
+    document.getElementById("overviewDonut"),
+
+    {
+
+        type:"doughnut",
+
+        data:{
+
+            labels:[
+                "Compliant",
+                "Non-Compliant"
+            ],
+
+            datasets:[{
+
+                data:[
+                    6,
+                    6
+                ],
+
+                backgroundColor:[
+                    "#19d995",
+                    "#ff4e5c"
+                ],
+
+                borderWidth:0
+
+            }]
+
+        },
+
+        options:{
+
+            responsive:true,
+
+            cutout:"68%",
+
+            plugins:{
+
+                legend:{
+                    display:false
+                }
+
+            }
+
+        }
+
+    }
+
+);
+
+
+/* ======================================================
+                 PARAMETER CHART
+====================================================== */
+
+new Chart(
+
+    document.getElementById("parameterChart"),
+
+    {
+
+        type:"bar",
+
+        data:{
+
+            labels:[
+                "Air",
+                "Water pH",
+                "Noise",
+                "Emission"
+            ],
+
+            datasets:[{
+
+                label:"Average",
+
+                data:[
+                    91.3,
+                    7.35,
+                    67.3,
+                    45.4
+                ],
+
+                backgroundColor:[
+                    "#299cff",
+                    "#19d995",
+                    "#ffb52e",
+                    "#a36cff"
+                ],
+
+                borderRadius:5
+
+            }]
+
+        },
+
+        options:chartOptions
+
+    }
+
+);
+
+
+/* ======================================================
+                   TREND CHART
+====================================================== */
+
+new Chart(
+
+    document.getElementById("trendChart"),
+
+    {
+
+        type:"line",
+
+        data:{
+
+            labels:[
+                "January",
+                "February",
+                "March",
+                "April"
+            ],
+
+            datasets:[
+
+                {
+
+                    label:"Air Quality",
+
+                    data:[
+                        72,
+                        85,
+                        95,
+                        110
+                    ],
+
+                    borderColor:"#299cff",
+
+                    backgroundColor:"rgba(41,156,255,.1)",
+
+                    fill:true,
+
+                    tension:.4
+
+                },
+
+                {
+
+                    label:"Noise",
+
+                    data:[
+                        62,
+                        65,
+                        68,
+                        72
+                    ],
+
+                    borderColor:"#ffb52e",
+
+                    backgroundColor:"rgba(255,181,46,.1)",
+
+                    fill:true,
+
+                    tension:.4
+
+                },
+
+                {
+
+                    label:"Emission",
+
+                    data:[
+                        38,
+                        42,
+                        47,
+                        55
+                    ],
+
+                    borderColor:"#19d995",
+
+                    backgroundColor:"rgba(25,217,149,.1)",
+
+                    fill:true,
+
+                    tension:.4
+
+                }
+
+            ]
+
+        },
+
+        options:chartOptions
+
+    }
+
+);
+
+
+/* ======================================================
+                    AIR QUALITY
+====================================================== */
+
+new Chart(
+
+    document.getElementById("airChart"),
+
+    {
+
+        type:"line",
+
+        data:{
+
+            labels:[
+                "January",
+                "February",
+                "March",
+                "April"
+            ],
+
+            datasets:[
+
+                {
+
+                    label:"Air Quality",
+
+                    data:[
+                        72,
+                        85,
+                        95,
+                        110
+                    ],
+
+                    borderColor:"#299cff",
+
+                    backgroundColor:"rgba(41,156,255,.1)",
+
+                    fill:true,
+
+                    tension:.4
+
+                },
+
+                {
+
+                    label:"Permissible Limit",
+
+                    data:[
+                        100,
+                        100,
+                        100,
+                        100
+                    ],
+
+                    borderColor:"#ff4e5c",
+
+                    borderDash:[
+                        6,
+                        6
+                    ],
+
+                    pointRadius:0
+
+                }
+
+            ]
+
+        },
+
+        options:chartOptions
+
+    }
+
+);
+
+
+/* ======================================================
+                    WATER QUALITY
+====================================================== */
+
+new Chart(
+
+    document.getElementById("waterChart"),
+
+    {
+
+        type:"line",
+
+        data:{
+
+            labels:[
+                "January",
+                "February",
+                "March",
+                "April"
+            ],
+
+            datasets:[{
+
+                label:"Water pH",
+
+                data:[
+                    7.0,
+                    7.2,
+                    7.4,
+                    7.8
+                ],
+
+                borderColor:"#19d995",
+
+                backgroundColor:"rgba(25,217,149,.1)",
+
+                fill:true,
+
+                tension:.4
+
+            }]
+
+        },
+
+        options:chartOptions
+
+    }
+
+);
+
+
+/* ======================================================
+                       NOISE
+====================================================== */
+
+new Chart(
+
+    document.getElementById("noiseChart"),
+
+    {
+
+        type:"line",
+
+        data:{
+
+            labels:[
+                "January",
+                "February",
+                "March",
+                "April"
+            ],
+
+            datasets:[
+
+                {
+
+                    label:"Noise Level",
+
+                    data:[
+                        62,
+                        65,
+                        68,
+                        72
+                    ],
+
+                    borderColor:"#ffb52e",
+
+                    backgroundColor:"rgba(255,181,46,.1)",
+
+                    fill:true,
+
+                    tension:.4
+
+                },
+
+                {
+
+                    label:"Permissible Limit",
+
+                    data:[
+                        70,
+                        70,
+                        70,
+                        70
+                    ],
+
+                    borderColor:"#ff4e5c",
+
+                    borderDash:[
+                        6,
+                        6
+                    ],
+
+                    pointRadius:0
+
+                }
+
+            ]
+
+        },
+
+        options:chartOptions
+
+    }
+
+);
+
+
+/* ======================================================
+                      EMISSION
+====================================================== */
+
+new Chart(
+
+    document.getElementById("emissionChart"),
+
+    {
+
+        type:"line",
+
+        data:{
+
+            labels:[
+                "January",
+                "February",
+                "March",
+                "April"
+            ],
+
+            datasets:[
+
+                {
+
+                    label:"Emission",
+
+                    data:[
+                        38,
+                        42,
+                        47,
+                        55
+                    ],
+
+                    borderColor:"#19d995",
+
+                    backgroundColor:"rgba(25,217,149,.1)",
+
+                    fill:true,
+
+                    tension:.4
+
+                },
+
+                {
+
+                    label:"Permissible Limit",
+
+                    data:[
+                        50,
+                        50,
+                        50,
+                        50
+                    ],
+
+                    borderColor:"#ff4e5c",
+
+                    borderDash:[
+                        6,
+                        6
+                    ],
+
+                    pointRadius:0
+
+                }
+
+            ]
+
+        },
+
+        options:chartOptions
+
+    }
+
+);
+
+
+/* ======================================================
+                 COMPLIANCE CHART
+====================================================== */
+
+new Chart(
+
+    document.getElementById("complianceChart"),
+
+    {
+
+        type:"doughnut",
+
+        data:{
+
+            labels:[
+                "Compliant",
+                "Non-Compliant"
+            ],
+
+            datasets:[{
+
+                data:[
+                    6,
+                    6
+                ],
+
+                backgroundColor:[
+                    "#19d995",
+                    "#ff4e5c"
+                ],
+
+                borderWidth:0
+
+            }]
+
+        },
+
+        options:{
+
+            responsive:true,
+
+            cutout:"62%",
+
+            plugins:{
+
+                legend:{
+
+                    labels:{
+                        color:"#9ba8bb"
+                    }
+
+                }
+
+            }
+
+        }
+
+    }
+
+);
+
+</script>
+
+</body>
+</html>

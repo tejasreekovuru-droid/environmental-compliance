@@ -1,0 +1,13 @@
+Location,Month,Air,Water_pH,Noise,Emission,Status
+Plant A,January,72,7.1,62,38,Compliant
+Plant A,February,85,7.3,65,42,Compliant
+Plant A,March,95,7.2,68,47,Compliant
+Plant A,April,110,7.6,72,55,Non-Compliant
+Plant B,January,68,6.9,60,35,Compliant
+Plant B,February,82,7.1,64,40,Compliant
+Plant B,March,91,7.4,67,45,Compliant
+Plant B,April,105,7.8,70,52,Non-Compliant
+Plant C,January,75,7.0,63,39,Compliant
+Plant C,February,88,7.2,66,44,Compliant
+Plant C,March,98,7.5,71,50,Attention
+Plant C,April,115,7.7,73,58,Non-Compliant
